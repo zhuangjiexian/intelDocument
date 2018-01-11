@@ -1,0 +1,547 @@
+Servlet的生命周期可以分为初始化阶段，运行阶段和销毁阶段三个阶段，以下过程属于初始化阶段是 
+
+1.  加载Servlet类及.class对应的数据 
+
+2. 创建ServletConfig对象 
+
+3. 创建Servlet对象 
+
+每一次请求来到容器时，会产生HttpServletRequest与HttpServlceResponse对象，并在调用service()方法时当做参数传入。 
+
+在WEB容器启动后，会读取Servlet设置信息，将Servlet类加载并实例化，并为每个Servlet设置信息产生一个ServletConfig对象，而后调用Servlet接口的init()方法，并将产生的ServletConfig对象当作参数传入。 
+
+
+
+
+
+
+
+start()方法来启动线程，真正实现了多线程运行，调用了run()方法；run()方法当作普通方法的方式调用。 
+
+CyclicBarrier让一组线程等待其他线程；CountDownLatch让一组线程等待某个事件发生。 
+
+Callable能够抛出checked exception。 
+
+start()方法让thread进去可运行状态（runnable），等待获取CPU的使用权。 
+
+
+
+
+记住就行 接口 只能用 public  和 abstract  修饰。only public & abstract are permitted 。 
+
+内部接口 only public, protected, private, abstract & static are permitted 
+
+
+
+
+-Xmx10240m -Xms10240m -Xmn5120m -XXSurvivorRatio=3 
+
+,其最小内存值和Survivor区总大小分别是（） 
+
+对于JVM内存配置参数： 
+-Xmx10240m：代表最大堆 
+
+-Xms10240m：代表最小堆 
+
+-Xmn5120m：代表新生代 
+
+-XXSurvivorRatio=3：代表Eden:Survivor = 3  
+
+根据Generation-Collection算法(目前大部分JVM采用的算法)，一般根据对象的生存周期将堆内存分为若干不同的区域，一般情况将新生代分为Eden ，两块Survivor；    计算Survivor大小， Eden:Survivor = 3，总大小为5120,3x+x+x=5120  x=1024 
+新生代大部分要回收，采用Copying算法，快！ 
+老年代 大部分不需要回收，采用Mark-Compact算法 
+
+
+
+
+CopyOnWriteArrayList适用于写少读多的并发场景 
+
+ReadWriteLock即为读写锁，他要求写与写之间互斥，读与写之间互斥， 
+
+   读与读之间可以并发执行。在读多写少的情况下可以提高效率 
+
+ConcurrentHashMap是同步的HashMap，读写都加锁 
+
+volatile只保证多线程操作的可见性，不保证原子性 
+
+
+
+
+对于D选项，volatite只保证线程在“加载数据阶段”加载的数据是最新的，并不能保证线程安全。 
+
+一个线程执行的过程有三个阶段： 
+
+加载（复制）主存数据到操作栈 -->  对操作栈数据进行修改  --> 将操作栈数据写回主存 
+
+volatite关键字，让编译器不去优化代码使用缓存等，以保证线程在“加载数据阶段”加载的数据都是最新的 
+比如： 
+
+某一时刻i=6是最新的值，volatile保证线程A,B都同时加载了这个最新的值， 
+
+然后A执行i(A)+1=7,然后将7写回主存， 
+
+B也执行i(B)+1=7,然后也将7写回内存， 
+
+这样，执行两次加法，i却只增加了1 
+
+
+
+
+
+终止一个线程
+优先级高的并不一定会马上执行。 
+
+sleep方法会阻塞一个线程并不会终止 
+
+创建一个新的线程时也不会终止另一个线程 
+
+当抛出一个异常后程序会结束，所以线程也会被终止 
+
+
+
+
+Statement、 PreparedStatement 、CallableStatement 区别和联系
+
+
+1. Statement、PreparedStatement和CallableStatement都是接口(interface)。 
+
+2. Statement继承自Wrapper、PreparedStatement继承自Statement、CallableStatement继承自PreparedStatement。 
+
+3. Statement接口提供了执行语句和获取结果的基本方法； 
+    PreparedStatement接口添加了处理 IN 参数的方法； 
+    CallableStatement接口添加了处理 OUT 参数的方法。 
+
+4. a. Statement: 
+    普通的不带参的查询SQL；支持批量更新,批量删除; 
+
+     b. PreparedStatement: 
+　　   可变参数的SQL,编译一次,执行多次,效率高; 
+　　   安全性好，有效防止Sql注入等问题; 
+　　   支持批量更新,批量删除; 
+     c. CallableStatement: 
+　　继承自PreparedStatement,支持带参数的SQL操作; 
+　　支持调用存储过程,提供了对输出和输入/输出参数(INOUT)的支持; 
+
+Statement每次执行sql语句，数据库都要执行sql语句的编译 ，最好用于仅执行一次查询并返回结果的情形时，效率高于PreparedStatement。
+
+
+
+jsp 九大内置对象和其作用详解 
+
+
+
+
+
+
+JSP中一共预先定义了9个这样的对象，分别为：request、response、session、application、out、pagecontext、config、page、exception
+
+1、request对象
+
+request 对象是 javax.servlet.httpServletRequest类型的对象。 该对象代表了客户端的请求信息，主要用于接受通过HTTP协议传送到服务器的数据。（包括头信息、系统信息、请求方式以及请求参数等）。request对象的作用域为一次请求。
+
+2、response对象
+
+response 代表的是对客户端的响应，主要是将JSP容器处理过的对象传回到客户端。response对象也具有作用域，它只在JSP页面内有效。
+
+3、session对象
+
+session 对象是由服务器自动创建的与用户请求相关的对象。服务器为每个用户都生成一个session对象，用于保存该用户的信息，跟踪用户的操作状态。session对象内部使用Map类来保存数据，因此保存数据的格式为 “Key/value”。 session对象的value可以使复杂的对象类型，而不仅仅局限于字符串类型。
+
+4、application对象
+
+ application 对象可将信息保存在服务器中，直到服务器关闭，否则application对象中保存的信息会在整个应用中都有效。与session对象相比，application对象生命周期更长，类似于系统的“全局变量”。
+
+5、out 对象
+
+out 对象用于在Web浏览器内输出信息，并且管理应用服务器上的输出缓冲区。在使用 out 对象输出数据时，可以对数据缓冲区进行操作，及时清除缓冲区中的残余数据，为其他的输出让出缓冲空间。待数据输出完毕后，要及时关闭输出流。
+
+6、pageContext 对象
+
+pageContext 对象的作用是取得任何范围的参数，通过它可以获取 JSP页面的out、request、reponse、session、application 等对象。pageContext对象的创建和初始化都是由容器来完成的，在JSP页面中可以直接使用 pageContext对象。
+
+7、config 对象
+
+config 对象的主要作用是取得服务器的配置信息。通过 pageConext对象的 getServletConfig() 方法可以获取一个config对象。当一个Servlet 初始化时，容器把某些信息通过 config对象传递给这个 Servlet。 开发者可以在web.xml 文件中为应用程序环境中的Servlet程序和JSP页面提供初始化参数。
+
+8、page 对象
+
+page 对象代表JSP本身，只有在JSP页面内才是合法的。 page隐含对象本质上包含当前 Servlet接口引用的变量，类似于Java编程中的 this 指针。
+
+9、exception 对象
+
+exception 对象的作用是显示异常信息，只有在包含 isErrorPage="true" 的页面中才可以被使用，在一般的JSP页面中使用该对象将无法编译JSP文件。excepation对象和Java的所有对象一样，都具有系统提供的继承结构。exception 对象几乎定义了所有异常情况。在Java程序中，可以使用try/catch关键字来处理异常情况； 如果在JSP页面中出现没有捕获到的异常，就会生成 exception 对象，并把 exception 对象传送到在page指令中设定的错误页面中，然后在错误页面中处理相应的 exception 对象。
+
+
+
+
+首先要声明一点，所谓“作用域”就是“信息共享的范围”，也就是说一个信息能够在多大的范围内有效。4个JSP内置对象的作用域分别为：application、session、request、page 。JSP内置对象作用域表如下：
+
+
+
+
+名称
+ 
+作用域
+ 
+
+application
+ 
+在所有应用程序中有效
+ 
+
+session
+ 
+在当前会话中有效
+ 
+
+request
+ 
+在当前请求中有效
+ 
+
+page
+ 
+在当前页面有效
+ 
+
+Servlet的生命周期分为5个阶段：加载、创建、初始化、处理客户请求、卸载。 
+
+(1)加载：容器通过类加载器使用servlet类对应的文件加载servlet 
+
+(2)创建：通过调用servlet构造函数创建一个servlet对象 
+
+(3)初始化：调用init方法初始化 
+
+(4)处理客户请求：每当有一个客户请求，容器会创建一个线程来处理客户请求 
+
+(5)卸载：调用destroy方法让servlet自己释放其占用的资源 
+
+
+
+
+instanceof用于判断前面的对象是否后面的类，或者其子类、实现类的实例。如果是，则返回true，否则返回false。  
+
+
+service()是在javax.servlet.Servlet接口中定义的, 在 javax.servlet.GenericServlet 中实现了这个接口, 而 doGet/doPost 则是在 javax.servlet.http.HttpServlet 中实现的, javax.servlet.http.HttpServlet 是 javax.servlet.GenericServlet 的子类. 所有可以这样理解, 其实所有的请求均首先由 service() 进行处理, 而在 javax.servlet.http.HttpServlet 的 service() 方法中, 主要做的事情就是判断请求类型是 Get 还是 Post, 然后调用对应的 doGet/doPost 执行.  
+
+
+
+
+
+
+
+
+什么是事务、事务特性、事务隔离级别、spring事务传播特性 
+
+
+
+1.什么是事务：
+
+事务是程序中一系列严密的操作，所有操作执行必须成功完成，否则在每个操作所做的更改将会被撤销，这也是事务的原子性（要么成功，要么失败）。
+
+2.事务特性：
+
+事务特性分为四个：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持续性（Durability）简称ACID。
+1.原子性（Atomicity）:事务是数据库逻辑工作单元，事务中包含的操作要么都执行成功，要么都执行失败。
+2.一致性（Consistency）：事务执行的结果必须是使数据库数据从一个一致性状态变到另外一种一致性状态。当事务执行成功后就说数据库处于一致性状态。如果在执行过程中发生错误，这些未完成事务对数据库所做的修改有一部分已写入物理数据库，这是数据库就处于不一致状态。
+3.隔离性（Isolation）：一个事务的执行过程中不能影响到其他事务的执行，即一个事务内部的操作及使用的数据对其他事务是隔离的，并发执行各个事务之间无不干扰。
+4.持续性（Durability）：即一个事务执一旦提交，它对数据库数据的改变是永久性的。之后的其它操作不应该对其执行结果有任何影响。
+
+3.事务的隔离级别：
+
+事务的隔离级别也分为四种，由低到高依次分别为：read uncommited（读未提交）、read commited（读提交）、read repeatable（读重复）、serializable（序列化），这四个级别可以逐个解决脏读、不可重复读、幻读这几类问题。
+
+
+1.read uncommited：是最低的事务隔离级别，它允许另外一个事务可以看到这个事务未提交的数据。
+2.read commited：保证一个事物提交后才能被另外一个事务读取。另外一个事务不能读取该事物未提交的数据。
+3.repeatable read：这种事务隔离级别可以防止脏读，不可重复读。但是可能会出现幻象读。它除了保证一个事务不能被另外一个事务读取未提交的数据之外还避免了以下情况产生（不可重复读）。
+4.serializable：这是花费最高代价但最可靠的事务隔离级别。事务被处理为顺序执行。除了防止脏读，不可重复读之外，还避免了幻象读。
+5.脏读、不可重复读、幻象读概念说明：
+•脏读：指当一个事务正字访问数据，并且对数据进行了修改，而这种数据还没有提交到数据库中，这时，另外一个事务也访问这个数据，然后使用了这个数据。因为这个数据还没有提交那么另外一个事务读取到的这个数据我们称之为脏数据。依据脏数据所做的操作肯能是不正确的。
+•不可重复读：指在一个事务内，多次读同一数据。在这个事务还没有执行结束，另外一个事务也访问该同一数据，那么在第一个事务中的两次读取数据之间，由于第二个事务的修改第一个事务两次读到的数据可能是不一样的，这样就发生了在一个事物内两次连续读到的数据是不一样的，这种情况被称为是不可重复读。
+•幻象读：一个事务先后读取一个范围的记录，但两次读取的纪录数不同，我们称之为幻象读（两次执行同一条 select 语句会出现不同的结果，第二次读会增加一数据行，并没有说这两次执行是在同一个事务中）
+
+
+spring事务传播特性：
+
+事务传播行为就是多个事务方法相互调用时，事务如何在这些方法间传播。spring支持7种事务传播行为：
+•propagation_requierd：如果当前没有事务，就新建一个事务，如果已存在一个事务中，加入到这个事务中，这是最常见的选择。
+•propagation_supports：支持当前事务，如果没有当前事务，就以非事务方法执行。
+•propagation_mandatory：使用当前事务，如果没有当前事务，就抛出异常。
+•propagation_required_new：新建事务，如果当前存在事务，把当前事务挂起。
+•propagation_not_supported：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+•propagation_never：以非事务方式执行操作，如果当前事务存在则抛出异常。
+•propagation_nested：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与propagation_required类似的操作
+
+
+Spring 默认的事务传播行为是 PROPAGATION_REQUIRED，它适合于绝大多数的情况。假设 ServiveX#methodX() 都工作在事务环境下（即都被 Spring 事务增强了），假设程序中存在如下的调用链：Service1#method1()->Service2#method2()->Service3#method3()，那么这 3 个服务类的 3 个方法通过 Spring 的事务传播机制都工作在同一个事务中。
+
+
+Properties，StringBuffer是线程安全的，SimpleDateFormat线程不安全
+
+java语言鲁棒性特点：
+
+  1）java能检查程序在编译和运行时的错误。java编译器可以查出许多其他语言运行时才能发现的错误。
+
+  2）提供自动垃圾收集来进行内存管理，防止程序员再管理内存时容易产生的错误。
+
+  3）java还实现了真数组，避免了覆盖数据的可能。
+
+    真数组：数组元素在内存中是一个接着一个线性存放的，通过第一个元素就能访问随后的元素。
+
+
+    java不支持指针操作，大大减少了错误发生的可能性。
+
+  4）java具有异常处理功能。
+
+    当程序异常时，它能捕获并响应意外情况，以保证程序能稳妥地结束，计算机不会崩溃。
+
+  5）java的强类型机制。
+
+
+
+JAVA语言的下面几种数组复制方法中，哪个效率最高？
+A.for循环逐一复制
+B.System.arraycopy
+C.System.copyof
+D.使用clone方法
+效率：System.arraycopy > clone > Arrays.copyOf > for循环
+
+
+
+1.启动一个线程的方法是 start() 
+2.结束线程用的是interrupt()方法，而stop()是强制结束线程，并不推荐使用，同时stop()方法已被弃用 
+3.daemon线程是守护线程，当主线程结束时，守护线程会自动结束 
+4.一个线程等待另外一个线程的方法是wait()方法 
+
+一个jsp页面引入另一个jsp页面的三种方式 及静态引入和动态引入的区别
+
+
+ 转载  2017年04月21日 10:27:47 
+16055
+.
+
+1.第一种：jstl  import 
+
+
+ <c:import url="inlayingJsp.jsp"></c:import> 
+ 2. 第二种：jsp include指令
+
+include指令告诉容器：复制被包含文件汇总的所有内容，再把它粘贴到这个文件中。
+
+
+<%@ include file="inlayingJsp.jsp" %>
+
+3. 第三种：jsp include动作
+
+<jsp:include   page="inlayingJsp.jsp" flush="true"/>
+
+
+
+
+注意：(1)include指令在转换时插入“Header.jsp”的源代码，而<jsp:include>动作在运行时插入“Header.jsp"的响应。
+
+                <%@include为静态包含，<%@include不论包含的是txt文本还是jsp文件，被包含的页面都不会从新编译。
+
+                <%@include为静态包含,包含了几个JSP转译成servlet时就会有  几 个 class文件，如果在jsp1定义了变量i同时在jsp2也定义了变量i那么你编译都会通不过的,
+
+                 jsp容器会告诉你i重复定义了.
+                 <jsp:include 为动态包含，<jsp:include 如包含jsp文件，这每次加载主页面的时候，被包含的页面都要重新编译。
+                   就是说不管你包含了几个jsp页面转译成servlet时中有一个class文件
+
+                  所以说对于<%@include要慎用!
+
+
+
+             (2)使用jstl标签时，一定要在jsp文件头加入以下代码：<%@taglib prefix="c" uri="http://Java.sun.com/jsp/jstl/core"%>
+
+
+
+
+
+重写
+
+public class TestObj {
+    class Super{
+   int flag=1;
+    Super(){
+        test();
+    } void test(){
+        System.out.println("Super.test() flag="+flag);
+    }
+}
+class Sub extends Super
+{Sub(){
+
+}
+
+    Sub(int i){
+        this();
+        flag=i;
+        System.out.println("Sub.Sub()flag="+flag);
+    }
+    void test(){
+    System.out.println("Sub.test()flag="+flag);
+}
+} public static void main(String[] args) {
+        new TestObj().new Sub(5);
+}
+
+
+}
+
+
+
+jdk提供的用于并发编程的同步器有哪些 ：CountDownLatch，CyclicBarrier和Semaphore 
+整型默认为int，如果需要long，须加l或L。小数默认double，d或D可省略，但如果需要float，须加f或F，例如float = 0.1f
+
+
+servlet的继承图
+集合关系图
+
+
+
+ThreadLocal详解 
+
+
+
+
+　　ThreadLocal翻译成中文比较准确的叫法应该是：线程局部变量。
+
+　　这个玩意有什么用处，或者说为什么要有这么一个东东？先解释一下，在并发编程的时候，成员变量如果不做任何处理其实是线程不安全的，各个线程都在操作同一个变量，显然是不行的，并且我们也知道volatile这个关键字也是不能保证线程安全的。那么在有一种情况之下，我们需要满足这样一个条件：变量是同一个，但是每个线程都使用同一个初始值，也就是使用同一个变量的一个新的副本。这种情况之下ThreadLocal就非常使用，比如说DAO的数据库连接，我们知道DAO是单例的，那么他的属性Connection就不是一个线程安全的变量。而我们每个线程都需要使用他，并且各自使用各自的。这种情况，ThreadLocal就比较好的解决了这个问题。
+
+　　我们从源码的角度来分析这个问题。
+
+　　首先定义一个ThreadLocal：
+
+
+复制代码
+public final class ConnectionUtil {
+
+    private ConnectionUtil() {}
+
+    private static final ThreadLocal<Connection> conn = new ThreadLocal<>();
+
+    public static Connection getConn() {
+        Connection con = conn.get();
+        if (con == null) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection("url", "userName", "password");
+                conn.set(con);
+            } catch (ClassNotFoundException | SQLException e) {
+                // ...
+            }
+        }
+        return con;
+    }
+
+}
+ 
+
+　　这样子，都是用同一个连接，但是每个连接都是新的，是同一个连接的副本。
+
+　　那么实现机制是如何的呢？
+
+　　1、每个Thread对象内部都维护了一个ThreadLocalMap这样一个ThreadLocal的Map，可以存放若干个ThreadLocal。
+
+
+
+/* ThreadLocal values pertaining to this thread. This map is maintained
+
+ * by the ThreadLocal class. */
+
+ThreadLocal.ThreadLocalMap threadLocals = null; 
+
+
+　　2、当我们在调用get()方法的时候，先获取当前线程，然后获取到当前线程的ThreadLocalMap对象，如果非空，那么取出ThreadLocal的value，否则进行初始化，初始化就是将initialValue的值set到ThreadLocal中。
+
+
+
+
+public T get() {
+
+    Thread t = Thread.currentThread();
+
+    ThreadLocalMap map = getMap(t);
+
+    if (map != null) {
+
+        ThreadLocalMap.Entry e = map.getEntry(this);
+
+        if (e != null)
+
+            return (T)e.value;
+
+    }
+
+    return setInitialValue();
+
+} 
+
+
+　　3、当我们调用set()方法的时候，很常规，就是将值设置进ThreadLocal中。
+
+　　4、总结：当我们调用get方法的时候，其实每个当前线程中都有一个ThreadLocal。每次获取或者设置都是对该ThreadLocal进行的操作，是与其他线程分开的。
+
+　　5、应用场景：当很多线程需要多次使用同一个对象，并且需要该对象具有相同初始化值的时候最适合使用ThreadLocal。
+
+　　6、其实说再多也不如看一下源码来得清晰。如果要看源码，其中涉及到一个WeakReference和一个Map，这两个地方需要了解下，这两个东西分别是a.Java的弱引用，也就是GC的时候会销毁该引用所包裹(引用)的对象，这个threadLocal作为key可能被销毁，但是只要我们定义成他的类不卸载，tl这个强引用就始终引用着这个ThreadLocal的，永远不会被gc掉。b.和HashMap差不多。
+
+　　事实上，从本质来讲，就是每个线程都维护了一个map，而这个map的key就是threadLocal，而值就是我们set的那个值，每次线程在get的时候，都从自己的变量中取值，既然从自己的变量中取值，那肯定就不存在线程安全问题，总体来讲，ThreadLocal这个变量的状态根本没有发生变化，他仅仅是充当一个key的角色，另外提供给每一个线程一个初始值。如果允许的话，我们自己就能实现一个这样的功能，只不过恰好JDK就已经帮我们做了这个事情。
+
+
+
+
+
+1. 只看尖括号里边的！！明确点和范围两个概念 
+
+
+2. 如果尖括号里的是一个类，那么尖括号里的就是一个点，比如List<A>,List<B>,List<Object> 
+ 
+3. 如果尖括号里面带有问号，那么代表一个范围，<? extends A>
+ 代表小于等于A的范围，<? super A>代表大于等于A的范围，<?>代表全部范围 
+4. 尖括号里的所有点之间互相赋值都是错，除非是俩相同的点 
+
+5. 尖括号小范围赋值给大范围，对，大范围赋值给小范围，错。如果某点包含在某个范围里，那么可以赋值，否则，不能赋值 
+
+6. List<?>和List 是相等的，都代表最大范围 
+
+---------------------------------------------------------------------------------- 
+
+7.补充：List既是点也是范围，当表示范围时，表示最大范围 
+
+
+
+
+
+在Struts框架中如果要使用Validation作验证的话，需要使用以下哪个Form？
+DynaValidatorActionForm 动态验证表单
+
+
+
+
+Rodriguez.D头像Rodriguez.D 
+exception是JSP九大内置对象之一，其实例代表其他页面的异常和错误。只有当页面是错误处理页面时，即isErroePage为 true时，该对象才可以使用。对于C项，errorPage的实质就是JSP的异常处理机制,发生异常时才会跳转到 errorPage指定的页面，没必要给errorPage再设置一个errorPage。所以当errorPage属性存在时， isErrorPage属性值为false 
+
+
+
+JSP 四大作用域： page (作用范围最小)、request、session、application（作用范围最大）。
+•存储在application对象中的属性可以被同一个WEB应用程序中的所有Servlet和JSP页面访问。（属性作用范围最大） 
+•存储在session对象中的属性可以被属于同一个会话（浏览器打开直到关闭称为一次会话，且在此期间会话不失效）的所有Servlet和JSP页面访问。 
+•存储在request对象中的属性可以被属于同一个请求的所有Servlet和JSP页面访问（在有转发的情况下可以跨页面获取属性值），例如使用PageContext.forward和PageContext.include方法连接起来的多个Servlet和JSP页面。 
+•存储在pageContext对象中的属性仅可以被当前JSP页面的当前响应过程中调用的各个组件访问，例如，正在响应当前请求的JSP页面和它调用的各个自定义标签类。 
+
+
+
+
+ThreadLocal继承Object，相当于没继承任何特殊的。
+ ThreadLocal没有实现任何接口。
+ ThreadLocal并不是一个Thread，而是Thread的局部变量。
+Synchronized用于线程间的数据共享，而ThreadLocal则用于线程间的数据隔离。 
+
+
+
+
+
+
