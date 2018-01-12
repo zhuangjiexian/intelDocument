@@ -1,0 +1,176 @@
+
+##########Volatile###########
+一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义： 
+1）保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。
+2）禁止进行指令重排序。 
+volatile只提供了保证访问该变量时， 每次都是从内存中读取最新值，并不会使用寄存器缓存该值——每次都会从内存中读取。
+而对该变量的修改，volatile并不提供原子性的保证。 
+由于及时更新，很可能导致另一线程访问最新变量值，无法跳出循环的情况 
+多线程下计数器必须使用锁保护。
+
+
+所谓 volatile的措施，就是
+1. 每次从内存中取值，不从缓存中什么的拿值。这就保证了用 volatile修饰的共享变量，每次的更新对于其他线程都是可见的。
+2. volatile保证了其他线程的立即可见性，就没有保证原子性。
+3.由于有些时候对 volatile的操作，不会被保存，说明不会造成阻塞。不可用与多线程环境下的计数器。
+
+
+
+Java 语言中的 volatile 变量可以被看作是一种 “程度较轻的 synchronized”；与synchronized 块相比，volatile 变量所需的编码较少，并且运行时开销也较少，但是它所能实现的功能也仅是 synchronized 的一部分。本文介绍了几种有效使用 volatile 变量的模式，并强调了几种不适合使用 volatile 变量的情形。
+
+锁提供了两种主要特性：互斥（mutual exclusion） 和可见性（visibility）。互斥即一次只允许一个线程持有某个特定的锁，因此可使用该特性实现对共享数据的协调访问协议，这样，一次就只有一个线程能够使用该共享数据。可见性要更加复杂一些，它必须确保释放锁之前对共享数据做出的更改对于随后获得该锁的另一个线程是可见的 —— 如果没有同步机制提供的这种可见性保证，线程看到的共享变量可能是修改前的值或不一致的值，这将引发许多严重问题。
+
+Volatile 变量
+
+Volatile 变量具有 synchronized 的可见性特性，但是不具备原子特性。这就是说线程能够自动发现 volatile 变量的最新值。Volatile 变量可用于提供线程安全，但是只能应用于非常有限的一组用例：多个变量之间或者某个变量的当前值与修改后值之间没有约束。因此，单独使用 volatile 还不足以实现计数器、互斥锁或任何具有与多个变量相关的不变式（Invariants）的类（例如 “start <=end”）。
+
+出于简易性或可伸缩性的考虑，您可能倾向于使用 volatile 变量而不是锁。当使用 volatile 变量而非锁时，某些习惯用法（idiom）更加易于编码和阅读。此外，volatile 变量不会像锁那样造成线程阻塞，因此也很少造成可伸缩性问题。在某些情况下，如果读操作远远大于写操作，volatile 变量还可以提供优于锁的性能优势。
+
+正确使用 volatile 变量的条件
+
+您只能在有限的一些情形下使用 volatile 变量替代锁。要使 volatile 变量提供理想的线程安全，必须同时满足下面两个条件：
+
+    对变量的写操作不依赖于当前值。
+    该变量没有包含在具有其他变量的不变式中。 
+
+
+实际上，这些条件表明，可以被写入 volatile 变量的这些有效值独立于任何程序的状态，包括变量的当前状态。
+
+第一个条件的限制使 volatile 变量不能用作线程安全计数器。虽然增量操作（x++）看上去类似一个单独操作，实际上它是一个由读取－修改－写入操作序列组成的组合操作，必须以原子方式执行，而 volatile 不能提供必须的原子特性。实现正确的操作需要使x 的值在操作期间保持不变，而 volatile 变量无法实现这点。（然而，如果将值调整为只从单个线程写入，那么可以忽略第一个条件。）
+
+大多数编程情形都会与这两个条件的其中之一冲突，使得 volatile 变量不能像 synchronized 那样普遍适用于实现线程安全。
+
+
+
+
+
+############join#################
+join()的作用是：“等待该线程终止”，这里需要理解的就是该线程是指的主线程等待子线程的终止。也就是在子线程调用了join()方法后面的代码，只有等到子线程结束了才能执行。 
+
+
+s
+
+
+################
+
+
+java.lang包中不能被继承的类：
+public final class Byte
+public final class Character
+public static final class Character.UnicodeBlock
+public final class Class<T>
+public final class Compile
+public final class Double
+public final class Float
+public final class Integer
+public final class Long
+public final class Math
+public final class ProcessBuilder
+public final class RuntimePermission
+public final class Short
+public final class StackTraceElement
+public final class StrictMath
+public final class String
+public final class StringBuffer
+public final class StringBuilder
+public final class System
+public final class Void 
+
+
+
+######
+1、如果两个对象相等，那么他们一定有相同的哈希值（hash code）。 
+
+2、如果两个对象的哈希值相等，那么这两个对象有可能相等也有可能不相等。（需要再通过equals来判断） 
+
+
+
+
+结果集(ResultSet)是数据中查询结果返回的一种对象，可以说结果集是一个存储查询结果的对象，但是结果集并不仅仅具有存储的功能，他同时还具有操纵数据的功能，可能完成对数据的更新等。 
+
+         结果集读取数据的方法主要是getXXX() ，他的参数可以使整型表示第几列（是从1开始的），还可以是列名。返回的是对应的XXX类型的值。如果对应那列时空值，XXX是对象的话返回XXX型的空值，如果XXX是数字类型，如Float等则返回0，boolean返回false。使用getString()可以返回所有的列的值，不过返回的都是字符串类型的。XXX可以代表的类型有：基本的数据类型如整型(int)，布尔型(Boolean)，浮点型(Float,Double)等，比特型（byte），还包括一些特殊的类型，如：日期类型（java.sql.Date），时间类型(java.sql.Time)，时间戳类型 (java.sql.Timestamp)，大数型(BigDecimal和BigInteger等)等。还可以使用getArray(int colindex/String columnname)，通过这个方法获得当前行中，colindex所在列的元素组成的对象的数组。使用getAsciiStream( 
+ int colindex/String colname)可以获得该列对应的当前行的ascii流。也就是说所有的getXXX方法都是对当前行进行操作。 
+
+     结果集从其使用的特点上可以分为四类，这四类的结果集的所具备的特点都是和Statement语句的创建有关，因为结果集是通过Statement语句执行后产生的，所以可以说，结果集具备何种特点，完全决定于Statement，当然我是说下面要将的四个特点，在Statement创建时包括三种类型。首先是无参数类型的，他对应的就是下面要介绍的基本的ResultSet对应的Statement。下面的代码中用到的Connection并没有对其初始化，变量conn代表的就是Connection对应的对象。SqlStr代表的是响应的SQL语句。 
+
+ 1、    最基本的ResultSet。 
+ 之所以说是最基本的ResultSet是因为，这个ResultSet他起到的作用就是完成了查询结果的存储功能，而且只能读去一次，不能够来回的滚动读取。这种结果集的创建方式如下： 
+
+ Statement st = conn.CreateStatement 
+ ResultSet rs = Statement.excuteQuery(sqlStr); 
+
+ 由于这种结果集不支持，滚动的读去功能所以，如果获得这样一个结果集，只能使用它里面的next()方法，逐个的读去数据。 
+
+ 2、    可滚动的ResultSet类型。 
+ 这个类型支持前后滚动取得纪录next（）、previous()，回到第一行first()，同时还支持要去的ResultSet中的第几行 absolute（int n），以及移动到相对当前行的第几行relative(int n)，要实现这样的ResultSet在创建Statement时用如下的方法。 
+
+ Statement st = conn. createStatement (int resultSetType, int resultSetConcurrency) 
+ ResultSet rs = st.executeQuery(sqlStr) 
+
+ 其中两个参数的意义是： 
+ resultSetType 是设置 ResultSet 对象的类型可滚动，或者是不可滚动。取值如下： 
+        ResultSet.TYPE_FORWARD_ONLY 只能向前滚动 
+        ResultSet.TYPE_SCROLL_INSENSITIVE 和 Result.TYPE_SCROLL_SENSITIVE 这两个 方法都能够实现任意的前后滚动，使用各种移动的 ResultSet 指针的方法。二者的区别在于前者对于修改不敏感，而后者对于修改敏感。 
+ resultSetConcurency 是设置 ResultSet 对象能够修改的，取值如下： 
+        ResultSet.CONCUR_READ_ONLY 设置为只读类型的参数。 
+        ResultSet.CONCUR_UPDATABLE 设置为可修改类型的参数。 
+ 所以如果只是想要可以滚动的类型的 Result 只要把 Statement 如下赋值就行了。 
+
+ Statement st = conn.createStatement(Result.TYPE_SCROLL_INSENITIVE, 
+                           ResultSet.CONCUR_READ_ONLY); 
+ ResultSet rs = st.excuteQuery(sqlStr) ； 
+
+ 用这个 Statement 执行的查询语句得到的就是可滚动的 ResultSet 。 
+
+
+
+ 3、    可更新的ResultSet 
+ 这样的ResultSet对象可以完成对数据库中表的修改，但是我知道ResultSet只是相当于数据库中表的视图，所以并不时所有的ResultSet只要设置了可更新就能够完成更新的，能够完成更新的ResultSet的SQL语句必须要具备如下的属性： 
+     a 、只引用了单个表。 
+     b 、不含有join或者group by子句。 
+     c 、那些列中要包含主关键字。 
+     具有上述条件的，可更新的ResultSet可以完成对数据的修改，可更新的结果集的创建方法是： 
+
+ Statement st = createstatement(Result.TYPE_SCROLL_INSENSITIVE,Result.CONCUR_UPDATABLE) 
+
+
+
+ 4、    可保持的ResultSet 
+ 正常情况下如果使用Statement执行完一个查询，又去执行另一个查询时这时候第一个查询的结果集就会被关闭，也就是说，所有的Statement的查询对应的结果集是一个，如果调用Connection的commit()方法也会关闭结果集。可保持性就是指当ResultSet的结果被提交时，是被关闭还是不被关闭。JDBC2.0和1.0提供的都是提交后ResultSet就会被关闭。不过在JDBC3.0中，我们可以设置ResultSet是否关闭。要完成这样的ResultSet的对象的创建，要使用的Statement的创建要具有三个参数，这个Statement的创建方式也就是，我所说的 Statement的第三种创建方式。 
+
+
+ ###################3##
+ 泛型仅仅是java的语法糖，它不会影响java虚拟机生成的汇编代码，在编译阶段，虚拟机就会把泛型的类型擦除，还原成没有泛型的代码，顶多编译速度稍微慢一些，执行速度是完全没有什么区别的. 
+
+ #######################
+
+ Java运行时的数据区包括：（其中前两个是线程共享的）
+
+1.方法区（Method Area）存储已被虚拟机加载的类信息、常量、静态变量、即编译器编译后的代码等数据
+
+2.堆（Heap）存放对象实例，几乎所有对象实例都在这里分配内存
+
+3.虚拟机栈（VM Stack）描述的是Java方法执行的内存模型：每个方法在执行的同时会创建一个Stack Frame(方法运行时的基础数据结构)用于存储局部变量表、操作数栈、动态连接、方法出口等信息
+
+4.本地方法栈（Native Method Stack）与虚拟机类似，不过则为虚拟机使用的到Native方法服务。（有的虚拟机如SunHotSpot会把本地方法栈个虚拟机合二为一）
+
+5.程序计数器（Program Counter Register）可看作当前线程所执行的字节码的行号的标识器
+
+############################
+
+double d=Math.cos（Math.toRadians（42））
+
+计算余弦值使用Math类的cos()方法 
+
+toRadians()是将角度转换为弧度 
+
+toDegrees()是将弧度转换为角度 
+
+###########################
+ArrayList默认10，增长1.5倍；HashMap默认16，增长2倍
+###########################
+getParameter()是获取POST/GET传递的参数值；
+getInitParameter获取Tomcat的server.xml中设置Context的初始化参数
+getAttribute()是获取对象容器中的数据值；
+getRequestDispatcher是请求转发。 
+
